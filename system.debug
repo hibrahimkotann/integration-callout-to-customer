@@ -1,0 +1,78 @@
+CustomerAPI.getCustomers();
+ CustomerAPI.PostCustomers();
+ CustomerAPI.DeleteCustomer();
+ CustomerAPI.DeleteCustomerById('483');
+ CustomerAPI.UpdateCustomerById('257');
+
+String mytoken = TokenUtility.getTokenByLabel('PTSAPIToken');
+System.debug(mytoken);
+
+     StaticResource sr = [SELECT Id, body FROM StaticResource WHERE name = 'Customers'];
+     String payload = sr.body.toString();
+     System.debug(payload);
+
+CustomerAPI.PostCustomersFromStaticResources();
+CustomerAPI.PostCustomersFromCustomerRequest();
+CustomerAPI.getCustomersByResponse();
+
+
+        String url = 'https://api.collectapi.com/imdb/imdbSearchByName';
+        String apiKey = '1Yg6y8wUnKETIJALGgT2m9:38rIIobZr3LfzXmrE2gleF';
+
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint(url);
+        request.setMethod('GET');
+        request.setHeader('Authorization', 'apikey ' + apiKey);
+
+        Http http = new Http();
+        HttpResponse response = http.send(request);
+            //String responseBody = response.getBody();
+             System.debug('Status code:'  + response.getStatusCode());
+            System.debug('body:'  + response.getBody());
+        if (response.getStatusCode() == 200) {
+            // Başarılı bir şekilde yanıt alındı
+            //String responseBody = response.getBody();
+            //System.debug(responseBody);
+        } else {
+            // Hata durumunda
+            //System.debug('Hata kodu: ' + response.getStatusCode() + ', Hata mesajı: ' + response.getBody());
+        }
+    
+
+
+  String url = 'https://api.collectapi.com/book/newBook';
+        String apiKey = ' 1Yg6y8wUnKETIJALGgT2m9:38rIIobZr3LfzXmrE2gleF';
+
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint(url);
+        request.setMethod('GET');
+        request.setHeader('Authorization', 'apikey ' + apiKey);
+
+        Http http = new Http();
+        HttpResponse response = http.send(request);
+            //String responseBody = response.getBody();
+             System.debug('Status code:'  + response.getStatusCode());
+            System.debug('body:'  + response.getBody());
+        if (response.getStatusCode() == 200) {
+            // Başarılı bir şekilde yanıt alındı
+            //String responseBody = response.getBody();
+            //System.debug(responseBody);
+        } else {
+            // Hata durumunda
+            //System.debug('Hata kodu: ' + response.getStatusCode() + ', Hata mesajı: ' + response.getBody());
+        }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
