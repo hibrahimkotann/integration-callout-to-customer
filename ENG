@@ -1,0 +1,231 @@
+public class CustomerAPI {
+    public static  String token =TokenUtility.getTokenByLabel('PTSAPIToken'); 
+
+    public static void getCustomers(){
+        
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint('https://api.pathtosalesforce.com/customerList.php?token='+token);
+        request.setMethod('GET');
+        HttpResponse response = http.send(request);
+        
+        System.debug(response.getStatusCode());
+        System.debug(response.getStatus());
+        System.debug(response.getBody());
+    }
+    public static void PostCustomers(){
+        
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint('https://api.pathtosalesforce.com/customer.php?token='+token);
+        request.setMethod('POST');
+        request.setHeader('Content-Type', 'application/json;charset=UTF-8');
+        request.setBody('[{"firstName": "Kevin", "lastName": "Costner", "email": "Kevincostner@gmail.com", "phone": "3214568745", "gender": "male", "status": "active"}, {"firstName": "Julia", "lastName": "Roberts", "email": "juliaroberts@gmail.com", "phone": "8745693256", "gender": "female", "status": "active"}]');
+        HttpResponse response = http.send(request);
+        
+        System.debug(response.getStatusCode());
+        System.debug(response.getStatus());
+        System.debug(response.getBody());
+    
+       
+}
+     public static void DeleteCustomer(){
+        
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint('https://api.pathtosalesforce.com/customer.php?id=224&token='+token);
+        request.setMethod('DELETE');
+       
+        HttpResponse response = http.send(request);
+        
+        System.debug(response.getStatusCode());
+        System.debug(response.getStatus());
+        System.debug(response.getBody());
+    
+    
+}
+     public static void DeleteCustomerById(String customerId){
+        
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint('https://api.pathtosalesforce.com/customer.php?id='+customerId+'&token='+token);
+        request.setMethod('DELETE');
+       
+        HttpResponse response = http.send(request);
+        
+        System.debug(response.getStatusCode());
+        System.debug(response.getStatus());
+        System.debug(response.getBody());
+    
+    }
+      public static void UpdateCustomerById(String customerId){
+        
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint('https://api.pathtosalesforce.com/customer.php?token='+token);
+        request.setMethod('PUT');
+        request.setHeader('Content-Type', 'application/json;charset=UTF-8');
+        request.setBody('{ "id": "'+customerId+'","firstName": "Ağlamak", "lastName": "Güzeldir", "email": "aglgzl@gmail.com", "phone": "4569785642", "gender": "male", "status": "active"}');
+        HttpResponse response = http.send(request);
+        
+        System.debug(response.getStatusCode());
+        System.debug(response.getStatus());
+        System.debug(response.getBody());
+    
+}
+    public static void PatchCustomer(String customerId){ // var olan bir Id yi update eder..Id yoksa insert eder..
+        
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint('https://api.pathtosalesforce.com/customer.php?token='+token);
+        request.setMethod('PATCH');
+        request.setHeader('Content-Type', 'application/json;charset=UTF-8');
+        request.setBody('{ "id": "'+customerId+'","firstName": "MahmutCan", "lastName": "Patlican", "email": "patlican@gmail.com", "phone": "4569785642", "gender": "female", "status": "active"}');
+        HttpResponse response = http.send(request);
+        
+        System.debug(response.getStatusCode());
+        System.debug(response.getStatus());
+        System.debug(response.getBody());
+    }
+      public static void PostCustomersFromStaticResources(){
+          StaticResource sr = [SELECT Id, body FROM StaticResource WHERE name = 'Customers'];
+          String payload = sr.body.toString();
+        
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint('https://api.pathtosalesforce.com/customer.php?token='+token);
+        request.setMethod('POST');
+        request.setHeader('Content-Type', 'application/json;charset=UTF-8');
+        request.setBody(payload);
+        HttpResponse response = http.send(request);
+        
+        System.debug(response.getStatusCode());
+        System.debug(response.getStatus());
+        System.debug(response.getBody());
+    
+       
+}
+ public static void PostCustomersFromCustomerRequest(){
+       
+        CustomerRequest customer = new CustomerRequest();
+        customer.firstName = 'Recep';
+        customer.lastName = 'Demirtaş';
+        customer.email = 'recpdmir@gmail.com';
+        customer.gender= 'Male';
+        customer.phone= '7417414714';
+        customer.status = 'active';
+     
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint('https://api.pathtosalesforce.com/customer.php?token='+token);
+        request.setMethod('POST');
+        request.setHeader('Content-Type', 'application/json;charset=UTF-8');
+        request.setBody(JSON.serialize(customer));
+        HttpResponse response = http.send(request);
+        
+        System.debug(response.getStatusCode());
+        System.debug(response.getStatus());
+        System.debug(response.getBody());
+    
+       
+}
+    public static void PostCustomersFromCustomerContacts(){ // salesforce contact içinden aldığımız kayıtları customer request class aracılığıyla karşı tarafa aktardık..
+        
+       List<Contact> conList = [SELECT Id, FirstName, LastName, Phone, Email FROM Contact];
+        List<CustomerRequest> customerList = new List<CustomerRequest>();
+        for (Contact con : conList){
+             CustomerRequest customer = new CustomerRequest();
+        customer.firstName = con.FirstName;
+        customer.lastName = con.LastName;
+        customer.email = con.email;
+        customer.phone = con.phone;
+        customer.gender= 'Male';
+        customer.phone= '7417414714';
+        customer.status = 'active';
+            
+            customerList.add(customer);
+        }
+       
+     
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint('https://api.pathtosalesforce.com/customer.php?token='+token);
+        request.setMethod('POST');
+        request.setHeader('Content-Type', 'application/json;charset=UTF-8');
+        request.setBody(JSON.serialize(customerList));
+        HttpResponse response = http.send(request);
+        
+        System.debug(response.getStatusCode());
+        System.debug(response.getStatus());
+        System.debug(response.getBody());
+    
+       
+}
+     public static void getCustomersByResponse(){    // dışardan gelen customerları contactlara aktarmak için Response class a gelen JSON alıp deserialeze yapıp contact listesi haline getirip salesforce ekledik..
+        
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint('https://api.pathtosalesforce.com/customerList.php?token='+token);
+        request.setMethod('GET');
+        HttpResponse response = http.send(request);
+        
+        System.debug(response.getStatusCode());
+        System.debug(response.getStatus());
+        System.debug(response.getBody());
+         
+       List<CustomerResponse> customers = CustomerResponse.parse(response.getBody());
+         
+         List<Contact> conList = new List<Contact>();
+         for(CustomerResponse customer : customers) {
+             
+        Contact con = new Contact();
+        con.FirstName =customer.firstName; 
+        con.LastName = customer.lastName;
+        con.Email = customer.email;
+        con.Phone = customer.phone;
+       
+            
+            conList.add(con);
+             
+         }
+         insert conList;
+         
+    }
+    @future (Callout = true) // Flow yardımı ile çalıştırmak için callout için future olması lazım..Sistem ne zaman hazır ise çalışması için future ekliyoruz..
+                               //  Flow la çağırmak için Invocable yapmamız lazım..future yaptığımız için invocable class oluşturarark flow da çağıracağız..
+     public static void getCustomersByResponse2(){    // Bir buton eklemesi yaparak dışardan gelen customerları contactlara aktarmak için Response class a gelen JSON alıp deserialeze yapıp contact listesi haline getirip salesforce ekledik..
+        
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint('https://api.pathtosalesforce.com/customerList.php?token='+token);
+        request.setMethod('GET');
+        HttpResponse response = http.send(request);
+        
+        System.debug(response.getStatusCode());
+        System.debug(response.getStatus());
+        System.debug(response.getBody());
+         
+       List<CustomerResponse> customers = CustomerResponse.parse(response.getBody());
+         
+         List<Contact> conList = new List<Contact>();
+         for(CustomerResponse customer : customers) {
+             
+        Contact con = new Contact();
+        con.FirstName =customer.firstName; 
+        con.LastName = customer.lastName;
+        con.Email = customer.email;
+        con.Phone = customer.phone;
+       
+            
+            conList.add(con);
+             
+         }
+         insert conList;
+         
+    }
+    
+    
+       
+    
+    
+ }
